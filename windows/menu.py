@@ -5,6 +5,9 @@ import pygame as pg
 
 
 class Menu(Window):
+    """
+    Class handling the main menu screen. Just a title and buttons atm.
+    """
     def __init__(self, surface):
         super().__init__(surface)
         self.font = pg.font.SysFont(stg.font, 100, True)
@@ -16,8 +19,12 @@ class Menu(Window):
         self.buttons.append(Button(self.surface, self.font, "Load sudoku", (310, 350), (700, 200)))
         self.buttons.append(Button(self.surface, self.font, "Editor", (400, 580), (500, 200)))
 
-    # loop of the menu that lets one pick a sudoku from file or editor sudoku, returns next state
     def pick_option(self) -> int:
+        """
+        Menu loop.
+
+        :return: next state
+        """
         while True:
             for event in pg.event.get():
                 if event.type == pg.QUIT:

@@ -1,4 +1,6 @@
-# ALL SETTINGS (USUALLY) REGARDING THE DRAW
+"""
+All setting values, some could break in theory some stuff cause not proper centering.
+"""
 
 # windows - resolution
 res = (1450, 1000)
@@ -22,11 +24,11 @@ blue_color = (0, 0, 255)
 hlight_color = (0, 153, 255)
 error_color = (255, 181, 107)
 
-# common sudokus grid sizes
+# common sudoku grid sizes
 common_sizes = [(9, 9), (16, 16), (6, 6), (8, 8), (4, 4)]
 
 # checks for mistakes
-helper = True
+helper = False
 
 # files
 prefix = "files\\"  # might be issue with other OS than Windows

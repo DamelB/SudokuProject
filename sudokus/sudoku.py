@@ -9,6 +9,10 @@ import pygame as pg
 
 
 class Sudoku(Grid):
+    """
+    The sudoku itself class + some extra properties for draw.
+    Inherits from grid which is to be drawn.
+    """
     def __init__(self, font, surface, file, size=(9, 9)):
         self.font = font  # for drawing numbers in cells
         super().__init__(surface, size[::-1])  # init grid
@@ -21,7 +25,7 @@ class Sudoku(Grid):
 
         # editor
         self.__prepare_cells(size)
-        self.name = "New Sudoku"
+        self.name = "New Sudoku"  # TODO
         self.description = "New description"
 
     def draw(self) -> None:
@@ -36,8 +40,13 @@ class Sudoku(Grid):
 
         pg.display.flip()
 
-    # set self.hlighted to clicked cell or None if outside the box
     def mouse_cell(self, pos: tuple) -> None:
+        """
+        Set highlited cell based on the given mouse position. None if outside.
+
+        :param pos: x,y mouse coordinates
+        :return: nothing
+        """
         cell_coord = ((pos[1] - stg.pivot[0]) // stg.cell_size,
                       (pos[0] - stg.pivot[1]) // stg.cell_size)
 
@@ -48,7 +57,7 @@ class Sudoku(Grid):
 
         self.hlighted = self.cells[cell_coord[0]][cell_coord[1]]  # new highlited cell
 
-    # input move of highlight
+    # input moves of highlight
     def move_left(self) -> None:
         if self.hlighted:
             relative = self.hlighted.relative
@@ -86,18 +95,18 @@ class Sudoku(Grid):
             if not self.hlighted.default:  # not default
                 self.hlighted.value = val
 
-    # completed when no mistake and full board
     def check_completed(self) -> bool:
+        # completed when no mistake and full board
         return self.__full() and not self.mistake()
 
     def __full(self) -> bool:
+        # full if no empty cells
         for row in range(self.size[0]):
             for col in range(self.size[1]):
                 if self.cells[row][col].value == "":  # an empty cell
                     return False
         return True
 
-    # just derived to issue into different class
     def mistake(self) -> bool:
         logic = Logic(self.cells)
         return logic.mistake()
@@ -123,6 +132,12 @@ class Sudoku(Grid):
                     self.cells[i][j].value = val
 
     def __prepare_cells(self, size) -> None:
+        """
+        Prepares the list of cells for both editor and play which adjusts given ones.
+
+        :param size: new size
+        :return: nothing
+        """
         self.cells = []
         for row in range(size[0]):  # row by row, col by col approach
             row_tmp = []

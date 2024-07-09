@@ -5,6 +5,10 @@ import string
 
 
 class Editor(Sudoku):
+    """
+    Special case of sudoku - has extra only export function,
+    couldn't do the loop it's an ongoing while.
+    """
     def __init__(self, font, surface, size=(9, 9)):
         super().__init__(font, surface, "", size)
 

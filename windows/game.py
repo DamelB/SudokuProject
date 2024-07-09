@@ -11,16 +11,23 @@ NUMPAD_KEYS = (pg.K_KP0, pg.K_KP1, pg.K_KP2, pg.K_KP3, pg.K_KP4, pg.K_KP5, pg.K_
 
 
 class Game(Window):
+    """
+    Sudoku game class. Can be editor or playable based.
+    """
     def __init__(self, surface, editor: bool, file=""):
         super().__init__(surface)
         self.font = pg.font.SysFont(stg.font, stg.cell_size * 3 // 4, True)
 
         self.editor = editor
+        self.QUIT_EDITOR = False
 
         # TODO numpad
         self.buttons = [Button(self.surface, self.font, "Menu", (980, 100), (400, 200))]
         if self.editor:
             size = _choose_size(self.surface, self.font)  # pre-screen
+            if size == (-1, -1):  # quit button was pressed
+                self.QUIT_EDITOR = True
+                return
             self.sudoku = Editor(self.font, self.surface, size)
             self.buttons.append(Button(self.surface, self.font, "Export", (980, 350), (400, 200)))
         else:
@@ -28,8 +35,15 @@ class Game(Window):
 
         self.last_keys = pg.key.get_pressed()  # just to define
 
-    # main game loop, returns next game state
     def loop(self) -> int:
+        """
+        Main sudoku game loop.
+
+        :return: next state
+        """
+        if self.QUIT_EDITOR:
+            return -1
+
         solved_button = False
         while True:
             for event in pg.event.get():
@@ -66,8 +80,12 @@ class Game(Window):
                     self.buttons.append(Button(self.surface, self.font, "Solved, cg!", (940, 350), (500, 200)))
                     solved_button = True  # already printed msg
 
-    # each possible keyboard input and its action
     def __check_keys(self) -> None:
+        """
+        Handles keyboard input.
+
+        :return: nothing
+        """
         self.new_keys = pg.key.get_pressed()
         if self.__key_cond(pg.K_LEFT):
             self.sudoku.move_left()
@@ -93,12 +111,24 @@ class Game(Window):
 
         self.last_keys = self.new_keys
 
-    # compare current vs old state of particular key
     def __key_cond(self, key) -> bool:
+        """
+        New key state vs old key state.
+
+        :param key: particular key macro
+        :return: true if not same
+        """
         return self.new_keys[key] and not self.last_keys[key]
 
 
 def _choose_size(surface, font) -> tuple:
+    """
+    A window that lets user choose from sizes of sudoku they want to make.
+
+    :param surface: pygame surface
+    :param font: pygame font
+    :return: size of sudoku, (-1, -1) if QUIT was called
+    """
     buttons = [Button(surface, font, "9x9", (200, 200), (250, 150)),
                Button(surface, font, "6x6", (600, 200), (250, 150)),
                Button(surface, font, "16x16", (1000, 200), (250, 150)),
@@ -107,7 +137,8 @@ def _choose_size(surface, font) -> tuple:
 
     while True:
         for event in pg.event.get():
-            # can't quit
+            if event.type == pg.QUIT:
+                return -1, -1
             if event.type == pg.MOUSEBUTTONDOWN:
                 if pg.mouse.get_pressed()[0]:
                     pos = pg.mouse.get_pos()

@@ -3,12 +3,18 @@ from sudokus.cell import Cell
 
 
 class Logic:
+    """
+    A logic class checking current state of a list of cells.
+    """
     def __init__(self, cells: list[list[Cell]]):
         self.cells = cells
         self.size = (len(cells), len(cells[0]))
 
-    # check mistake on top of each row and column
     def mistake(self):
+        """
+        Checks all possible mistakes within the sudoku.
+        :return: nothing
+        """
         mistake = False
         for row in range(self.size[0]):
             if self.__mistake_row(row):
@@ -22,7 +28,7 @@ class Logic:
             if self.size == (9, 9):
                 if self.__mistake_3x3s():
                     mistake = True
-
+            # TODO other sizes
         return mistake
 
     def __mistake_row(self, row: int) -> bool:
@@ -83,8 +89,8 @@ def _get_counter() -> list[list[Cell]]:
     return cnt
 
 
-# call error on top of the cells in the list
 def _give_error(cells: list[Cell]) -> None:
+    # call error on top of the cells in the list
     for cell in cells:
         cell.error()
 
